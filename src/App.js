@@ -1,25 +1,26 @@
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
+import InformeDiario from './components/InformeDiario';
+import axios from 'axios';
 import './App.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [informe, setInforme] = useState([]);
+
+  useEffect(() => {
+    const obtenerInforme = () => {
+      const consultarApi = async () => {
+        const url = 'http://127.0.0.1:3000/informeDiario/generarInforme';
+        const resultado = await axios.get(url);
+        setInforme(resultado.data.empleado);
+      };
+      consultarApi();
+    };
+    obtenerInforme();
+  }, []);
+
+  return(
+    <InformeDiario informe={informe}></InformeDiario>
+  )
 }
 
 export default App;
