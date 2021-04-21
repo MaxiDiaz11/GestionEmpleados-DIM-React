@@ -1,22 +1,50 @@
-import React, {Fragment} from 'react';
-import {jsPDF} from 'jspdf';
+import React, { Fragment } from "react";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
-const InformeDiario = ({informe}) => {
+const InformeDiario = ({ informe }) => {
+  function headRows() {
+    return [
+      {
+        nro_afiliado: "AF",
+        apellido: "Apellido",
+        nombre: "Nombre",
+        horarioDesde: "Hora entrada",
+        firmaEntrada: "Firma",
+        horarioHasta: "Hora salida",
+        firmaSalida: "Firma",
+      },
+    ];
+  }
+  const getRowsInforme = () => {
+    let body = [];
+    informe.forEach((i) => {
+      body.push({
+        nro_afiliado: i.nro_afiliado,
+        nombre: i.nombre,
+        apellido: i.apellido,
+        horarioDesde: i.horario_laboral_desde,
+        firmaEntrada: "",
+        horarioHasta: i.horario_laboral_hasta,
+        firmaSalida: "",
+      });
+    });
+    return body;
+  };
+
   const crearInformeDiario = () => {
-    let n1 = 30,
-      n2 = 10;
     console.log(informe);
     const doc = new jsPDF();
-    doc.text(n1, n2, 'INFORME DE EMPLEADOS');
-    informe.map((i) => {
-      n2 += 10;
-      doc.text(
-        n1,
-        n2,
-        `Nro de afiliado:${i.nro_afiliado} - Nombre: ${i.nombre} - Apellido: ${i.apellido}`
-      );
+    doc.text("INFORME DE EMPLEADOS", 40,30);
+
+    doc.autoTable({ html: "#my-table" });
+
+    doc.autoTable({
+      head: headRows(),
+      body: getRowsInforme(),
+      theme: "grid",
     });
-    doc.save('InformeDiario.pdf');
+    doc.save("InformeDiario.pdf");
   };
 
   return (
