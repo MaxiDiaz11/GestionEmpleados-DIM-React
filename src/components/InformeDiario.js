@@ -44,112 +44,144 @@ const InformeDiario = ({ grupos }) => {
         },
       ];
     }
+    if (tipoTemplate === "TEMPLATE_ORDENANZAS") {
+      return [
+        {
+          nro_afiliado: "AF",
+          nombre: "Nombre",
+          apellido: "Apellido",
+          horario: "      ",
+          horarioDesde: "Hora",
+          firmaEntrada: "Firma",
+          horarioHasta: "Hora",
+          firmaSalida: "Firma",
+        },
+      ];
+    }
   }
 
   // FUNCION PARA QUE ME DEVUELVA LOS DATOS DEL TEMPLATE
-  // const getDatosTemplate_Fiscalizacion = (tipo, grupo) =>{
-  //   let body = [];
-  //   console.log(grupo)
-  //   if(tipo==="GRUPO"){
-  //     grupo.empleados.map((g) => {
-  //       body.push({
-  //         nro_afiliado: g.nro_afiliado,
-  //         nombre: g.nombre,
-  //         apellido: g.apellido,
-  //         horario: g.horario_laboral,
-  //         horarioDesde: "",
-  //         firmaEntrada: "",
-  //         horarioHasta: "",
-  //         firmaSalida: "",
-  //       });
-  //     });
-  //   }
-
-  //   if(tipo="SUBGRUPO"){
-  //     grupo.subgrupo[0].empleados.map((g) => {
-  //       body.push({
-  //         nro_afiliado: g.nro_afiliado,
-  //         nombre: g.nombre,
-  //         apellido: g.apellido,
-  //         horario: g.horario_laboral,
-  //         horarioDesde: "",
-  //         firmaEntrada: "",
-  //         horarioHasta: "",
-  //         firmaSalida: "",
-  //       });
-  //     });
-  //   }
-  //   return body;
-
-  // }
+  const getDatosTemplate_Fiscalizacion = (tipo, grupo, body) => {
+    if (tipo === "GRUPO") {
+      grupo.empleados.map((g) => {
+        body.push({
+          nro_afiliado: g.nro_afiliado,
+          nombre: g.nombre,
+          apellido: g.apellido,
+          horario: g.horario_laboral,
+          horarioDesde: "",
+          firmaEntrada: "",
+          horarioHasta: "",
+          firmaSalida: "",
+        });
+      });
+    }
+    if (tipo === "SUBGRUPO") {
+      grupo.subgrupo[0].empleados.map((g) => {
+        body.push({
+          nro_afiliado: g.nro_afiliado,
+          nombre: g.nombre,
+          apellido: g.apellido,
+          horario: g.horario_laboral,
+          horarioDesde: "",
+          firmaEntrada: "",
+          horarioHasta: "",
+          firmaSalida: "",
+        });
+      });
+    }
+    return body;
+  };
+  const getDatosTemplate_ContratosTemporarios = (tipo, grupo, body) => {
+    if (tipo === "GRUPO") {
+      grupo.empleados.map((g) => {
+        body.push({
+          nro_afiliado: g.nro_afiliado,
+          nombre: g.nombre,
+          apellido: g.apellido,
+          horario: g.horario_laboral,
+          horarioDesde: "",
+          firmaEntrada: "",
+          horarioHasta: "",
+          firmaSalida: "",
+        });
+      });
+    }
+    if (tipo === "SUBGRUPO") {
+      grupo.subgrupo[0].empleados.map((g) => {
+        body.push({
+          nro_afiliado: g.nro_afiliado,
+          nombre: g.nombre,
+          apellido: g.apellido,
+          horario: g.horario_laboral,
+          horarioDesde: "",
+          firmaEntrada: "",
+          horarioHasta: "",
+          firmaSalida: "",
+        });
+      });
+    }
+    return body;
+  };
+  const getDatosTemplate_Ordenanzas = (tipo, grupo, body) => {
+    if (tipo === "GRUPO") {
+      grupo.empleados.map((g) => {
+        body.push({
+          nro_afiliado: g.nro_afiliado,
+          nombre: g.nombre,
+          apellido: g.apellido,
+          horario: g.horario_laboral,
+          horarioDesde: "",
+          firmaEntrada: "",
+          horarioHasta: "",
+          firmaSalida: "",
+        });
+      });
+    }
+    if (tipo === "SUBGRUPO") {
+      grupo.subgrupo[0].empleados.map((g) => {
+        console.log(g);
+        body.push({
+          nro_afiliado: g.nro_afiliado,
+          nombre: g.nombre,
+          apellido: g.apellido,
+          horario: g.horario_laboral,
+          horarioDesde: "",
+          firmaEntrada: "",
+          horarioHasta: "",
+          firmaSalida: "",
+        });
+      });
+    }
+    return body;
+  };
 
   //Funcion para obtener los elementos de la tabla
   const getBodyRowsInforme = (grupo) => {
     let body = [];
 
     if (grupo.subgrupo === undefined) {
-      // GRUPO
+      // GRUPOS
       if (grupo.tipo_template === "TEMPLATE_FISCALIZACION") {
-        // getDatosTemplate_Fiscalizacion("GRUPO", grupo)
-        grupo.empleados.map((g) => {
-          body.push({
-            nro_afiliado: g.nro_afiliado,
-            nombre: g.nombre,
-            apellido: g.apellido,
-            horario: g.horario_laboral,
-            horarioDesde: "",
-            firmaEntrada: "",
-            horarioHasta: "",
-            firmaSalida: "",
-          });
-        });
+        getDatosTemplate_Fiscalizacion("GRUPO", grupo, body);
       }
       if (grupo.tipo_template === "TEMPLATE_CONTRATOS_TEMPORARIOS") {
-        grupo.empleados.map((g) => {
-          body.push({
-            nro_afiliado: g.nro_afiliado,
-            nombre: g.nombre,
-            apellido: g.apellido,
-            horario: g.horario_laboral,
-            horarioDesde: "",
-            firmaEntrada: "",
-            horarioHasta: "",
-            firmaSalida: "",
-          });
-        });
+        getDatosTemplate_ContratosTemporarios("GRUPO", grupo, body);
+      }
+      if (grupo.tipo_template === "TEMPLATE_ORDENANZAS") {
+        getDatosTemplate_Ordenanzas("GRUPO", grupo, body);
       }
     } else {
-      //SUBGRUPO
+      //SUBGRUPOS
       if (grupo.subgrupo.empleados === undefined) {
         if (grupo.tipo_template === "TEMPLATE_FISCALIZACION") {
-          grupo.subgrupo.empleados.map((g) => {
-            body.push({
-              nro_afiliado: g.nro_afiliado,
-              nombre: g.nombre,
-              apellido: g.apellido,
-              horario: g.horario_laboral,
-              horarioDesde: "",
-              firmaEntrada: "",
-              horarioHasta: "",
-              firmaSalida: "",
-            });
-          });
+          getDatosTemplate_Fiscalizacion("SUBGRUPO", grupo, body);
         }
-
         if (grupo.tipo_template === "TEMPLATE_CONTRATOS_TEMPORARIOS") {
-          console.log(grupo.subgrupo[0].empleados);
-          grupo.subgrupo[0].empleados.map((g) => {
-            body.push({
-              nro_afiliado: g.nro_afiliado,
-              nombre: g.nombre,
-              apellido: g.apellido,
-              horario: g.horario_laboral,
-              horarioDesde: "",
-              firmaEntrada: "",
-              horarioHasta: "",
-              firmaSalida: "",
-            });
-          });
+          getDatosTemplate_ContratosTemporarios("SUBGRUPO", grupo, body);
+        }
+        if (grupo.tipo_template === "TEMPLATE_ORDENANZAS") {
+          getDatosTemplate_Ordenanzas("SUBGRUPO", grupo, body);
         }
       } else {
         // VALORES `POR DEFECTO`
@@ -172,12 +204,21 @@ const InformeDiario = ({ grupos }) => {
 
     let pageNumber = doc.internal.getNumberOfPages();
 
-    doc.text("CONTRATOS TEMPORARIOS", 15, 85);
+    doc.text("CONTRATOS TEMPORARIOS", 15, 80);
     doc.autoTable({
-      startY: 90,
+      startY: 85,
       showHead: "firstPage",
       head: headRows("TEMPLATE_CONTRATOS_TEMPORARIO"),
       body: getBodyRowsInforme(getGrupo(2)),
+      theme: "grid",
+    });
+
+    doc.text("ORDENANZAS", 15, 120);
+    doc.autoTable({
+      startY: 125,
+      showHead: "firstPage",
+      head: headRows("TEMPLATE_ORDENANZAS"),
+      body: getBodyRowsInforme(getGrupo(1)),
       theme: "grid",
     });
 
