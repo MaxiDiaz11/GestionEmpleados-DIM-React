@@ -11,6 +11,7 @@ function App() {
       const consultarApi = async () => {
         const url = "http://127.0.0.1:3000/informeDiario/generarInforme";
         const resultado = await axios.get(url);
+        console.log(resultado.data.grupos.grupo)
         setGrupos(resultado.data.grupos.grupo);
       };
       consultarApi();

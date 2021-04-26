@@ -193,29 +193,36 @@ const InformeDiario = ({ grupos }) => {
   //Funcion para crear el informe
   const crearInformeDiario = () => {
     const doc = new jsPDF();
-    doc.text("FISCALIZACION", 15, 15);
 
+    doc.text("FISCALIZACION", 15, 15);
     doc.autoTable({
       startY: 20,
-      head: headRows("TEMPLATE_FISCALIZACION"),
+      head: [
+        [
+          {
+            content: "People",
+            colSpan: 5,
+            styles: { halign: "center", fillColor: [22, 160, 133] },
+          },
+        ],
+         headRows(`TEMPLATE_FISCALIZACION`),
+      ],
       body: getBodyRowsInforme(getGrupo(3)),
       theme: "grid",
     });
 
     let pageNumber = doc.internal.getNumberOfPages();
 
-    doc.text("CONTRATOS TEMPORARIOS", 15, 80);
     doc.autoTable({
-      startY: 85,
+      // startY: 90,
       showHead: "firstPage",
       head: headRows("TEMPLATE_CONTRATOS_TEMPORARIO"),
       body: getBodyRowsInforme(getGrupo(2)),
       theme: "grid",
     });
 
-    doc.text("ORDENANZAS", 15, 120);
     doc.autoTable({
-      startY: 125,
+      // startY: 160,
       showHead: "firstPage",
       head: headRows("TEMPLATE_ORDENANZAS"),
       body: getBodyRowsInforme(getGrupo(1)),
