@@ -172,7 +172,6 @@ const InformeDiario = ({ grupos }) => {
 
   //!Funcion para obtener los elementos de la tabla
   const getBodyRowsInforme = (grupo) => {
-    console.log(grupo);
     let body = [];
     if (grupo.subgrupo === undefined) {
       // GRUPOS
@@ -213,14 +212,13 @@ const InformeDiario = ({ grupos }) => {
 
   //!Funcion para crear el informe
   const crearInformeDiario = (grupo) => {
-    console.log("dsafsdf");
     const doc = new jsPDF();
 
     let finalY = doc.lastAutoTable.finalY || 25;
-    doc.setFontSize(20);
+    doc.setFontSize(22);
     doc.text("INFORME DIARIO", 80, 15);
 
-    doc.setFontSize(15);
+    doc.setFontSize(17);
     for (let i = 0; i < grupo.length; i++) {
       let nombreGrupo, nombreSubGrupo;
 
@@ -230,8 +228,8 @@ const InformeDiario = ({ grupos }) => {
 
       if (i === 0) {
         grupo[i].subgrupo[0] === undefined
-          ? doc.text(nombreGrupo, 90, finalY)
-          : doc.text(nombreSubGrupo, 90, finalY);
+          ? doc.text(nombreGrupo, 15, finalY)
+          : doc.text(nombreSubGrupo, 15, finalY);
 
         doc.autoTable({
           startY: finalY + 5,
@@ -243,12 +241,8 @@ const InformeDiario = ({ grupos }) => {
       } else {
         finalY = doc.lastAutoTable.finalY;
         grupo[i].subgrupo === undefined
-          ? doc.text(nombreGrupo, 90, finalY + 20)
-          : doc.text(nombreSubGrupo, 90, finalY + 20);
-
-        console.log(nombreGrupo);
-        console.log(nombreSubGrupo);
-        console.log(getBodyRowsInforme(getGrupo(grupo[i].codigo)));
+          ? doc.text(nombreGrupo, 15, finalY + 20)
+          : doc.text(nombreSubGrupo, 15, finalY + 20);
 
         doc.autoTable({
           startY: finalY + 25,
