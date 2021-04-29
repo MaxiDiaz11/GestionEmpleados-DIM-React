@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
 const InformeDiario = ({ grupos }) => {
-  //Funcion para obtener el grupo
+  //!Funcion para obtener el grupo
   function getGrupo(codigoGrupo) {
     let grupoInforme = {};
     grupos.map((grupo) => {
@@ -14,10 +14,10 @@ const InformeDiario = ({ grupos }) => {
     return grupoInforme;
   }
 
-  //Funcion para definir las filas
+  //!Funcion para definir las filas
   function headRows(tipoTemplate) {
     if (tipoTemplate === "TEMPLATE_FISCALIZACION") {
-      return [
+      const template = [
         {
           nro_afiliado: "AF",
           nombre: "Nombre",
@@ -29,8 +29,9 @@ const InformeDiario = ({ grupos }) => {
           firmaSalida: "Firma",
         },
       ];
+      return template;
     }
-    if (tipoTemplate === "TEMPLATE_CONTRATOS_TEMPORARIO") {
+    if (tipoTemplate === "TEMPLATE_CONTRATOS_TEMPORARIOS") {
       return [
         {
           nro_afiliado: "AF",
@@ -58,9 +59,16 @@ const InformeDiario = ({ grupos }) => {
         },
       ];
     }
+    if (tipoTemplate === undefined || tipoTemplate === null) {
+      return [
+        {
+          mensaje: "No hay datos para mostrar",
+        },
+      ];
+    }
   }
 
-  // FUNCION PARA QUE ME DEVUELVA LOS DATOS DEL TEMPLATE
+  //!FUNCION PARA QUE TE DEVUELVA LOS TEMPLATES DE TABLAS
   const getDatosTemplate_Fiscalizacion = (tipo, grupo, body) => {
     if (tipo === "GRUPO") {
       grupo.empleados.map((g) => {
@@ -140,7 +148,6 @@ const InformeDiario = ({ grupos }) => {
     }
     if (tipo === "SUBGRUPO") {
       grupo.subgrupo[0].empleados.map((g) => {
-        console.log(g);
         body.push({
           nro_afiliado: g.nro_afiliado,
           nombre: g.nombre,
@@ -156,10 +163,17 @@ const InformeDiario = ({ grupos }) => {
     return body;
   };
 
-  //Funcion para obtener los elementos de la tabla
-  const getBodyRowsInforme = (grupo) => {
-    let body = [];
+  const getValoresPorDefecto = (body) => {
+    body.push({
+      mensaje: "No hay campos disponibles",
+    });
+    return body;
+  };
 
+  //!Funcion para obtener los elementos de la tabla
+  const getBodyRowsInforme = (grupo) => {
+    console.log(grupo);
+    let body = [];
     if (grupo.subgrupo === undefined) {
       // GRUPOS
       if (grupo.tipo_template === "TEMPLATE_FISCALIZACION") {
@@ -185,51 +199,66 @@ const InformeDiario = ({ grupos }) => {
         }
       } else {
         // VALORES `POR DEFECTO`
+        if (
+          grupo.tipo_template === undefined ||
+          grupo.tipo_template === "" ||
+          grupo === undefined
+        ) {
+          getValoresPorDefecto(body);
+        }
       }
     }
     return body;
   };
 
-  //Funcion para crear el informe
-  const crearInformeDiario = () => {
+  //!Funcion para crear el informe
+  const crearInformeDiario = (grupo) => {
+    console.log("dsafsdf");
     const doc = new jsPDF();
 
-    doc.text("FISCALIZACION", 15, 15);
-    doc.autoTable({
-      startY: 20,
-      head: [
-        [
-          {
-            content: "People",
-            colSpan: 5,
-            styles: { halign: "center", fillColor: [22, 160, 133] },
-          },
-        ],
-         headRows(`TEMPLATE_FISCALIZACION`),
-      ],
-      body: getBodyRowsInforme(getGrupo(3)),
-      theme: "grid",
-    });
+    let finalY = doc.lastAutoTable.finalY || 25;
+    doc.setFontSize(20);
+    doc.text("INFORME DIARIO", 80, 15);
 
-    let pageNumber = doc.internal.getNumberOfPages();
+    doc.setFontSize(15);
+    for (let i = 0; i < grupo.length; i++) {
+      let nombreGrupo, nombreSubGrupo;
 
-    doc.autoTable({
-      // startY: 90,
-      showHead: "firstPage",
-      head: headRows("TEMPLATE_CONTRATOS_TEMPORARIO"),
-      body: getBodyRowsInforme(getGrupo(2)),
-      theme: "grid",
-    });
+      grupo[i].subgrupo === undefined
+        ? (nombreGrupo = grupo[i].nombre)
+        : (nombreSubGrupo = grupo[i].subgrupo[0].nombre_subgrupo);
 
-    doc.autoTable({
-      // startY: 160,
-      showHead: "firstPage",
-      head: headRows("TEMPLATE_ORDENANZAS"),
-      body: getBodyRowsInforme(getGrupo(1)),
-      theme: "grid",
-    });
+      if (i === 0) {
+        grupo[i].subgrupo[0] === undefined
+          ? doc.text(nombreGrupo, 90, finalY)
+          : doc.text(nombreSubGrupo, 90, finalY);
 
-    doc.setPage(pageNumber);
+        doc.autoTable({
+          startY: finalY + 5,
+          showHead: "firstPage",
+          head: headRows(grupo[i].tipo_template),
+          body: getBodyRowsInforme(getGrupo(grupo[i].codigo)),
+          theme: "grid",
+        });
+      } else {
+        finalY = doc.lastAutoTable.finalY;
+        grupo[i].subgrupo === undefined
+          ? doc.text(nombreGrupo, 90, finalY + 20)
+          : doc.text(nombreSubGrupo, 90, finalY + 20);
+
+        console.log(nombreGrupo);
+        console.log(nombreSubGrupo);
+        console.log(getBodyRowsInforme(getGrupo(grupo[i].codigo)));
+
+        doc.autoTable({
+          startY: finalY + 25,
+          showHead: "firstPage",
+          head: headRows(grupo[i].tipo_template),
+          body: getBodyRowsInforme(getGrupo(grupo[i].codigo)),
+          theme: "grid",
+        });
+      }
+    }
     doc.save("InformeDiario.pdf");
   };
 
@@ -239,7 +268,7 @@ const InformeDiario = ({ grupos }) => {
         <h1 className="mt-5 text-center display-2">Informe diario</h1>
         <button
           className="btn btn-primary mt-2 w-100"
-          onClick={crearInformeDiario}
+          onClick={() => crearInformeDiario(grupos)}
         >
           Obtener Informe
         </button>
