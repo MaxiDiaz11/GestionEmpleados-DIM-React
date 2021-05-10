@@ -44,7 +44,7 @@ function App() {
     // </Fragment>
 
     //  <InformeDiario grupos={grupos}></InformeDiario>
-    <InformeEmpleados />
+    <InformeEmpleados grupos={grupos} />
   );
 }
 export default App;
