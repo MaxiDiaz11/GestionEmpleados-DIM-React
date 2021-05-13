@@ -6,7 +6,7 @@ import "./App.css";
 import InformeEmpleados from "./components/InformeEmpleados";
 
 function App() {
-  const [grupos, setGrupos] = useState([]);
+  const [grupo, setGrupos] = useState([]);
 
   useEffect(() => {
     const obtenerInforme = () => {
@@ -16,12 +16,12 @@ function App() {
         console.log(resultado.data.grupos.grupo);
         setGrupos(resultado.data.grupos.grupo);
       };
-
       consultarApi();
     };
     obtenerInforme();
   }, []);
-
+  
+  console.log(grupo);
   return (
     // <Fragment>
     //   <div className="container">
@@ -44,7 +44,7 @@ function App() {
     // </Fragment>
 
     //  <InformeDiario grupos={grupos}></InformeDiario>
-    <InformeEmpleados grupos={grupos} />
+    <InformeEmpleados grupo={grupo} />
   );
 }
 export default App;

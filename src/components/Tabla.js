@@ -1,57 +1,59 @@
-import React, { useMemo } from "react";
-import { columnas } from "./columnas";
-import { useTable } from "react-table";
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 import "./tabla.css";
 
-const Tabla = ({ grupos }) => {
-  console.log("en tabla");
-  console.log(grupos);
-
-  const columns = useMemo(() => columnas, []);
-  const data = useMemo(() => grupos, [grupos]);
-
-  const tabla = useTable({
-    columns,
-    data,
+const Tabla = ({ columns, data, titulo }) => {
+  const useStyles = makeStyles({
+    table: {
+      minWidth: 650,
+      marginTop: 20,
+      marginBottom: 20,
+    },
   });
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = tabla;
+  const classes = useStyles();
 
   return (
     <div>
-      <h1>Tabla</h1>
-
-      <table {...getTableProps()}>
-        <thead>
-        {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+      <h1 className="my-3">{titulo}</h1>
+      <TableContainer component={Paper}>
+        <Table
+          className={classes.table}
+          size="small"
+          aria-label="a dense table"
+        >
+          <TableHead>
+            <TableRow>
+              {columns.map((col) => (
+                <TableCell align="center">{col.Header}</TableCell>
               ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((fila) => (
+              <TableRow key={Math.random() * (1000 - 1) + 1}>
+                {/* <TableCell component="th" scope="fila">
+                {fila.nro_afiliado}
+              </TableCell>  */}
+                <TableCell align="center"> {fila.nro_afiliado}</TableCell>
+                <TableCell align="center">{fila.nombre}</TableCell>
+                <TableCell align="center">{fila.apellido}</TableCell>
+                <TableCell align="center"></TableCell>
+                <TableCell align="center"></TableCell>
+                <TableCell align="center"></TableCell>
+                <TableCell align="center"></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
