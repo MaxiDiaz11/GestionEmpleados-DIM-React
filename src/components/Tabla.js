@@ -9,7 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import "./tabla.css";
 
-const Tabla = ({ columns, data, titulo }) => {
+const Tabla = ({ columns, data, titulo, nombre }) => {
   const useStyles = makeStyles({
     table: {
       minWidth: 650,
@@ -22,6 +22,7 @@ const Tabla = ({ columns, data, titulo }) => {
 
   return (
     <div>
+      {nombre ? <h1 className="my-3">{nombre}</h1> : null}
       <h1 className="my-3">{titulo}</h1>
       <TableContainer component={Paper}>
         <Table

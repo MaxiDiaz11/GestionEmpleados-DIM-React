@@ -20,7 +20,7 @@ function App() {
     };
     obtenerInforme();
   }, []);
-  
+
   console.log(grupo);
   return (
     // <Fragment>

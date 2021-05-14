@@ -338,34 +338,3 @@ export const getColumnas = (tipoTemplate, templateSubgrupo = "") => {
     ];
   }
 };
-
-// export const columnas = [
-//   {
-//     Header: "Numero Afiliado",
-//     accessor: "nro_afiliado",
-//   },
-//   {
-//     Header: "Nombre",
-//     accessor: "nombre",
-//   },
-//   {
-//     Header: "Apellido",
-//     accessor: "apellido",
-//   },
-//   {
-//     Header: "Hora",
-//     accessor: "horarioDesde",
-//   },
-//   {
-//     Header: "Firma",
-//     accessor: "firmaEntrada",
-//   },
-//   {
-//     Header: "Hora",
-//     accessor: "horarioHasta",
-//   },
-//   {
-//     Header: "Firma",
-//     accessor: "firmaSalida",
-//   },
-// ];

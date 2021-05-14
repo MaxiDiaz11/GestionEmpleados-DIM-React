@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Tabla from "./Tabla";
 import { getColumnas } from "./columnas";
 import "./tabla.css";
@@ -43,7 +43,7 @@ const InformeEmpleados = ({ grupo }) => {
     if (tipo === "SUBGRUPO") {
       datosTemplate = grupo.subgrupo[0].empleados;
     }
-    console.log(datosTemplate)
+    console.log(datosTemplate);
     return datosTemplate;
   };
   const getDatosTemplate_General = (tipo, grupo, datosTemplate) => {
@@ -51,18 +51,13 @@ const InformeEmpleados = ({ grupo }) => {
       datosTemplate = grupo.empleados;
     }
     if (tipo === "SUBGRUPO") {
-      console.log(grupo.subgrupo);
-      // if (grupo.subgrupo.length > 1) {
-      //   for (let index = 0; index < grupo.subgrupo.length; index++) {
-      //     console.log(grupo.subgrupo[index].empleados);
-      //   }
-      // }
+      datosTemplate = grupo.empleados;
     }
     return datosTemplate;
   };
 
   // //!OBTENER FILAS (empleados)
-  const obtenerFilas = (grupo) => {
+  const obtenerFilas = (grupo, subgrupo = []) => {
     console.log(grupo);
     let datosTemplate = [];
     if (grupo.subgrupo === undefined) {
@@ -89,7 +84,11 @@ const InformeEmpleados = ({ grupo }) => {
         );
       }
       if (grupo.tipo_template === "TEMPLATE_GENERAL") {
-        datosTemplate = getDatosTemplate_General("GRUPO", grupo, datosTemplate);
+        datosTemplate = getDatosTemplate_General(
+          "GRUPO",
+          subgrupo,
+          datosTemplate
+        );
       }
     } else {
       //SUBGRUPOS
@@ -97,7 +96,7 @@ const InformeEmpleados = ({ grupo }) => {
         if (grupo.tipo_template === "TEMPLATE_GENERAL") {
           datosTemplate = getDatosTemplate_General(
             "SUBGRUPO",
-            grupo,
+            subgrupo,
             datosTemplate
           );
         }
@@ -137,17 +136,22 @@ const InformeEmpleados = ({ grupo }) => {
     return datosTemplate;
   };
 
-  // // const getValoresPorDefecto = () => {
-  // //   body.push({
-  // //     mensaje: "No hay campos disponibles",
-  // //   });
-  // //   return body;
-  // // };
-
   // //!OBTENER COLUMNAS
-  const obtenerColumnas = (tipo_template) => {
-    const columnas = getColumnas(tipo_template);
+  const obtenerColumnas = (tipo_template, templateSubgrupo = "") => {
+    const columnas = getColumnas(tipo_template, templateSubgrupo);
     return columnas;
+  };
+
+  //!RETORNAR TABLA
+  const getTable = (columnas, filas, nombreSubGrupo, nombreGrupo) => {
+    return (
+      <Tabla
+        columns={columnas}
+        data={filas}
+        titulo={nombreSubGrupo}
+        nombre={nombreGrupo}
+      />
+    );
   };
 
   return (
@@ -156,19 +160,58 @@ const InformeEmpleados = ({ grupo }) => {
       {grupo.map((g) => {
         let nombreGrupo, nombreSubGrupo;
 
-        let { columnas, filas } = definirFilasColumnas(
-          obtenerFilas(g),
-          obtenerColumnas(g.tipo_template)
-        );
+        console.log(g);
 
         if (g.subgrupo === undefined) {
           nombreGrupo = g.nombre;
+
+          let { columnas, filas } = definirFilasColumnas(
+            obtenerFilas(g),
+            obtenerColumnas(g.tipo_template)
+          );
+
           return <Tabla columns={columnas} data={filas} titulo={nombreGrupo} />;
         } else {
-          nombreSubGrupo = g.subgrupo[0].nombre_subgrupo;
-          return (
-            <Tabla columns={columnas} data={filas} titulo={nombreSubGrupo} />
-          );
+          if (g.subgrupo.length === 1) {
+            nombreSubGrupo = g.subgrupo[0].nombre_subgrupo;
+            let { columnas, filas } = definirFilasColumnas(
+              obtenerFilas(g),
+              obtenerColumnas(g.tipo_template)
+            );
+
+            return (
+              <Tabla columns={columnas} data={filas} titulo={nombreSubGrupo} />
+            );
+          }
+
+          if (g.subgrupo.length > 1) {
+            for (let i = 0; i < g.subgrupo.length; i++) {
+              nombreGrupo = g.nombre;
+              nombreSubGrupo = g.subgrupo[i].nombre_subgrupo;
+
+              console.log(nombreGrupo);
+              console.log(nombreSubGrupo);
+
+              let { columnas, filas } = definirFilasColumnas(
+                obtenerFilas(g, g.subgrupo[i]),
+                obtenerColumnas(g.tipo_template, g.subgrupo[i].tipo_template)
+              );
+
+              console.log(columnas);
+              console.log(filas);
+
+              // let tabla = getTable(columnas, filas, nombreSubGrupo, nombreGrupo);
+                
+              return (
+                <Tabla
+                  columns={columnas}
+                  data={filas}
+                  titulo={nombreSubGrupo}
+                  nombre={nombreGrupo}
+                />
+              );
+            }
+          }
         }
       })}
     </div>
